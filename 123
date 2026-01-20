@@ -1,160 +1,65 @@
-// LandingPage.js
-export const LandingPage = ({ onStart }) => (
-  <div className="h-screen w-full bg-[#F5EBE0] flex flex-col items-center justify-center p-6 text-[#6B5E4C]">
-    <div className="w-full max-w-md bg-[#FEFAE0] rounded-[40px] overflow-hidden shadow-xl">
-      <img src="https://images.unsplash.com/photo-1529900748604-07564a03e7a6" alt="Finland" className="h-80 w-full object-cover" />
-      <div className="p-10 text-center">
-        <h1 className="text-3xl font-bold mb-4 font-serif">極光之旅</h1>
-        <p className="mb-8 opacity-80">與好友一同編織芬蘭的冬日回憶</p>
-        <button 
-          onClick={onStart}
-          className="bg-[#D4A373] text-white px-12 py-4 rounded-full text-lg font-bold shadow-lg active:scale-95 transition-all"
-        >
-          開始旅程
-        </button>
-      </div>
-    </div>
-  </div>
-);
-// Itinerary.js
-export const Itinerary = () => (
-  <div className="p-4 bg-[#F5EBE0] min-h-screen pb-24">
-    {/* 橫向日期選單 */}
-    <div className="flex gap-4 overflow-x-auto py-4 no-scrollbar">
-      {['1/20', '1/21', '1/22', '1/23'].map((date, i) => (
-        <div key={i} className={`flex-shrink-0 w-20 h-24 rounded-3xl flex flex-col items-center justify-center shadow-sm ${i === 0 ? 'bg-[#D4A373] text-white' : 'bg-[#FEFAE0]'}`}>
-          <span className="text-xs">Day {i+1}</span>
-          <span className="text-lg font-bold">{date}</span>
-        </div>
-      ))}
-    </div>
-
-    {/* 時間軸卡片 */}
-    <div className="mt-8 space-y-6 relative border-l-2 border-dashed border-[#D4A373] ml-4 pl-8">
-      <div className="relative bg-[#FEFAE0] p-5 rounded-[24px] shadow-sm">
-        <div className="absolute -left-[41px] top-6 w-4 h-4 rounded-full bg-[#D4A373]" />
-        <span className="text-sm font-bold text-[#D4A373]">10:00 AM</span>
-        <h3 className="text-xl font-bold mt-1">赫爾辛基大教堂</h3>
-        <div className="mt-3 flex gap-2">
-          <button className="bg-[#E9EDC9] px-3 py-1 rounded-full text-xs">📍 導航</button>
-          <button className="bg-[#E9EDC9] px-3 py-1 rounded-full text-xs">🎟️ 門票資訊</button>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-// Calculator.js
-export const FloatingCalc = () => (
-  <button className="fixed right-6 bottom-28 w-16 h-16 bg-[#D4A373] rounded-full shadow-2xl flex items-center justify-center text-2xl z-50">
-    🧮
-  </button>
-);
-
-// 新增行程的長條按鈕
-export const AddButton = () => (
-  <div className="fixed bottom-6 left-0 right-0 flex justify-center px-6">
-    <button className="w-full max-w-md h-16 bg-[#6B5E4C] text-[#FEFAE0] rounded-2xl font-bold text-lg shadow-lg">
-      + 新增行程 / 項目
-    </button>
-  </div>
-);
+npx create-react-app travel-nordic-app
+cd travel-nordic-app
+npm install lucide-react firebase tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        'nordic-bg': '#F5EBE0',      // 淺咖背景
+        'nordic-cream': '#FEFAE0',   // 奶油色調
+        'nordic-wood': '#D4A373',    // 木質棕 (按鈕/強調)
+        'nordic-dark': '#6B5E4C',    // 深咖文字
+        'nordic-green': '#CCD5AE',   // 鼠尾草綠 (勾選/選中)
+      },
+      borderRadius: {
+        'nordic': '24px',
+      }
+    },
+  },
+  plugins: [],
+}
 import React, { useState } from 'react';
+import LandingPage from './components/LandingPage';
+import ItineraryTimeline from './components/ItineraryTimeline';
+import FloatingCalc from './components/FloatingCalc';
 
-const ExpenseCalculator = () => {
-  const [amount, setAmount] = useState('0');
-  const [currency, setCurrency] = useState('EUR'); // EUR 或 TWD
-  const rate = 35; // 假設歐元匯率
-
-  // 模擬成員名單（未來從 Firebase 抓取）
-  const [members, setMembers] = useState([
-    { id: '1', name: '我', selected: true },
-    { id: '2', name: '小明', selected: true },
-    { id: '3', name: '小華', selected: true },
-  ]);
-
-  const toggleMember = (id) => {
-    setMembers(members.map(m => m.id === id ? { ...m, selected: !m.selected } : m));
-  };
-
-  const selectedCount = members.filter(m => m.selected).length;
-  const splitAmount = selectedCount > 0 ? (parseFloat(amount) / selectedCount).toFixed(2) : 0;
-
-  const handleNumber = (num) => {
-    setAmount(prev => prev === '0' ? num : prev + num);
-  };
+function App() {
+  const [started, setStarted] = useState(false);
 
   return (
-    <div className="flex flex-col h-screen bg-[#F5EBE0] p-6 font-sans text-[#6B5E4C]">
-      {/* 1. 置頂大按鈕計算機區域 */}
-      <div className="bg-[#FEFAE0] rounded-[32px] p-6 shadow-sm mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <button 
-            onClick={() => setCurrency(currency === 'EUR' ? 'TWD' : 'EUR')}
-            className="bg-[#D4A373] text-white px-4 py-1 rounded-full text-sm font-bold shadow-md"
-          >
-            {currency} ⇋ {currency === 'EUR' ? 'TWD' : 'EUR'}
-          </button>
-          <span className="text-xs opacity-60">今日匯率 約 1:{rate}</span>
-        </div>
-        
-        <div className="text-right text-5xl font-bold mb-2 truncate">
-          {amount} <span className="text-xl">{currency}</span>
-        </div>
-        
-        {currency === 'EUR' && (
-          <div className="text-right text-lg opacity-50">
-            ≈ {(amount * rate).toLocaleString()} TWD
-          </div>
-        )}
-      </div>
-
-      {/* 2. 分帳成員選擇區 */}
-      <div className="mb-6">
-        <p className="text-sm font-bold mb-3 ml-2">分帳成員 ({selectedCount} 人)</p>
-        <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
-          {members.map(m => (
-            <button
-              key={m.id}
-              onClick={() => toggleMember(m.id)}
-              className={`px-5 py-2 rounded-full whitespace-nowrap transition-all ${
-                m.selected ? 'bg-[#CCD5AE] text-[#6B5E4C] shadow-inner' : 'bg-white opacity-60'
-              }`}
-            >
-              {m.name} {m.selected ? '✓' : ''}
+    <div className="min-h-screen bg-nordic-bg text-nordic-dark font-sans">
+      {!started ? (
+        <LandingPage onStart={() => setStarted(true)} />
+      ) : (
+        <>
+          <main className="pb-32">
+            <ItineraryTimeline />
+          </main>
+          
+          {/* 全域懸浮計算機 */}
+          <FloatingCalc />
+          
+          {/* 置中長條新增按鈕 */}
+          <div className="fixed bottom-8 left-0 right-0 px-6 flex justify-center z-40">
+            <button className="w-full max-w-md bg-nordic-dark text-nordic-cream py-4 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform">
+              ＋ 新增旅程項目
             </button>
-          ))}
-        </div>
-        <p className="text-center mt-4 text-[#D4A373] font-bold">
-          每人需付：{splitAmount} {currency}
-        </p>
-      </div>
-
-      {/* 3. 九宮格大按鈕 (計算機鍵盤) */}
-      <div className="grid grid-cols-3 gap-3 flex-grow mb-20">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 'C', 0, '.'].map((btn) => (
-          <button
-            key={btn}
-            onClick={() => {
-              if (btn === 'C') setAmount('0');
-              else handleNumber(btn.toString());
-            }}
-            className="bg-white hover:bg-[#FEFAE0] active:scale-95 transition-all rounded-[24px] text-2xl font-bold shadow-sm flex items-center justify-center h-16"
-          >
-            {btn}
-          </button>
-        ))}
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
-};
-
-export default ExpenseCalculator;
-{
-  "title": "芬蘭赫爾辛基晚餐",
-  "total_amount": 120.50,
-  "currency": "EUR",
-  "payer_id": "user_A_id",      // 誰先墊錢的
-  "split_members": ["user_A", "user_B", "user_C"], // 參與平分的人
-  "created_at": "2024-01-20T19:00:00Z",
-  "per_person_amount": 40.16
 }
+
+export default App;
+npx create-react-app travel-nordic-app
+cd travel-nordic-app
+npm install lucide-react firebase tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+npx create-react-app travel-nordic-app
+cd travel-nordic-app
+npm install lucide-react firebase tailwindcss postcss autoprefixer
+npx tailwindcss init -p
