@@ -1,0 +1,7 @@
+{
+  "name": "NordicTrip - 奶油風團體旅遊規劃",
+  "description": "一個高品質、充滿溫暖色調的團體旅遊規劃工具，具備行程管理、登機證式預訂查看、多幣別記帳與個人化行李清單功能。",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
