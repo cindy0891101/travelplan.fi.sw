@@ -1,3 +1,9 @@
+const ScheduleView: React.FC<ScheduleViewProps> = ({ isEditMode }) => {
+  // 強制讓 isEditMode 永遠為 true (測試用)
+  isEditMode = true; 
+
+  const [fullSchedule, setFullSchedule] = useState<Record<string, DayData>>(() => {
+  // ... 以下不變ㄒ
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { dbService } from '../firebaseService';
 import { NordicCard, Modal, NordicButton } from '../components/Shared';
