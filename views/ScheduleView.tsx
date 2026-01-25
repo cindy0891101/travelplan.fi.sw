@@ -55,6 +55,16 @@ const fixToTraditional = (text: string) => {
 
 // --- 主元件 ---
 const ScheduleView: React.FC<ScheduleViewProps> = ({ isEditMode }) => {
+  // --- 暴力測試代碼：開始 ---
+  useEffect(() => {
+    console.log("正在執行暴力同步測試...");
+    dbService.saveFullSchedule(fullSchedule);
+  }, []); 
+  // --- 暴力測試代碼：結束 ---
+
+  const [fullSchedule, setFullSchedule] = useState<Record<string, DayData>>(() => {
+  // ... 原本的代碼
+const ScheduleView: React.FC<ScheduleViewProps> = ({ isEditMode }) => {
   // 1. 狀態初始化 (預設先抓本地緩存，避免閃爍)
   const [fullSchedule, setFullSchedule] = useState<Record<string, DayData>>(() => {
     const saved = localStorage.getItem('nordic_full_schedule');
